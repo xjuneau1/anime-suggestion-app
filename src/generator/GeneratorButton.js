@@ -2,11 +2,10 @@ import React, { useEffect } from "react";
 
 function GeneratorButton({
   quoteFormData,
-  setQuoteFormData,
-  initQuoteFormData,
+  setQuoteFormData
 }) {
   const handleGetAnime = async () => {
-    await fetch("https://animechan.vercel.app/api/random")
+    await fetch("https://animechan.vercel.app/api/random",{mode: 'no-cors',method:'GET'})
       .then((response) => response.json())
       .then((data) => {
         setQuoteFormData({ ...quoteFormData, ...data });

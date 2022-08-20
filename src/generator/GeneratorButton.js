@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
 
-function GeneratorButton({
-  quoteFormData,
-  setQuoteFormData
-}) {
+function GeneratorButton({ quoteFormData, setQuoteFormData }) {
   const handleGetAnime = async () => {
-    await fetch("https://animechan.vercel.app/api/random",{mode: 'no-cors',method:'GET'})
+    await fetch("https://animechan.vercel.app/api/random")
       .then((response) => response.json())
       .then((data) => {
         setQuoteFormData({ ...quoteFormData, ...data });
@@ -23,14 +20,12 @@ function GeneratorButton({
       `https://kitsu.io/api/edge/anime?filter[text]=${quoteFormData.anime
         .replace(/-|!|;|:/g, "")
         .replace(/\s+/g, "%20")
-        .toLowerCase()}`
-    )
+        .toLowerCase()}`)
       .then((response) => response.json())
       .then(({ data }) => {
-          console.log(data[0].attributes.coverImage.large)
-        })
+        console.log(data[0].attributes.coverImage.large);
+      })
       .then(console.log(quoteFormData));
-      
   };
 
   return (

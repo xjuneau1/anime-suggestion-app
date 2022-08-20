@@ -10,6 +10,7 @@ function Generator() {
         image:"",
       }
     const [quoteFormData, setQuoteFormData] = useState(initQuoteFormData)
+    console.log(quoteFormData)
     return ( 
         <div>
             <GeneratorButton initQuoteFormData={initQuoteFormData} quoteFormData={quoteFormData} setQuoteFormData={setQuoteFormData}/>

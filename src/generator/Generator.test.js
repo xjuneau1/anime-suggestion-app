@@ -1,5 +1,4 @@
 import {render} from "@testing-library/react"
-import Generator from "./Generator"
 import GeneratorButton from "./GeneratorButton"
 import TextBox from "./TextBox"
 

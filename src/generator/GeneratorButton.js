@@ -1,20 +1,38 @@
-import React, { useEffect } from "react";
+import React from "react";
 
-function GeneratorButton({ quoteFormData, setQuoteFormData, initFormData }) {
+function GeneratorButton({ quoteData, setQuoteData }) {
   
-  useEffect(()=>{
-    async function getAnime(){
-      await fetch("https://animechan.vercel.app/api/random")
-      .then((response) => response.json())
-      .then((data) => {
-        setQuoteFormData({ ...quoteFormData, ...data });
-      })
-    }
-    getAnime()
-  },[])
+  async function changeAnime(){
+    await fetch("https://animechan.vercel.app/api/random",{method:"GET"})
+    .then((response) => response.json())
+    .then((data) => {
+      setQuoteData({ ...quoteData, ...data });
+      return fetch(
+        `https://kitsu.io/api/edge/anime?filter[text]=${quoteData.anime
+          .replace(/-|!|;|:/g, "")
+          .replace(/\s+/g, "%20")
+          .toLowerCase()}`,{method:"GET"})
+    })
+    .then((response) => response.json())
+    .then(({data})=>{
+      console.log(data[0].attributes.coverImage.original)
+      // setQuoteData({...quoteData, image: `url(${data[0].attributes.coverImage.original})`})
+    })
+    .then(console.log(quoteData))
+}
   
-  const handleGetAnime = async () => {
-    await fetch("https://animechan.vercel.app/api/random")
+  return (
+    <div>
+      <button onClick={changeAnime}>Anime</button>
+    </div>
+  );
+}
+
+export default GeneratorButton;
+
+
+/*
+await fetch("https://animechan.vercel.app/api/random")
       .then((response) => response.json())
       .then((data) => {
         setQuoteFormData({ ...quoteFormData, ...data });
@@ -39,18 +57,4 @@ function GeneratorButton({ quoteFormData, setQuoteFormData, initFormData }) {
         setQuoteFormData({...quoteFormData,'image':data[0].attributes.coverImage.original})
       })
       .then(console.log(quoteFormData));
-  };
-  const handleSetAnime = async (event)=> {
-    await handleGetAnime()
-    
-    const body = event.target.parentNode.parentNode.parentNode.parentNode
-    body.style.backgroundImage = quoteFormData.image
-  }
-  return (
-    <div>
-      <button onClick={handleSetAnime}>Anime</button>
-    </div>
-  );
-}
-
-export default GeneratorButton;
+*/

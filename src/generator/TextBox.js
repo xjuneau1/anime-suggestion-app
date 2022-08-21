@@ -1,12 +1,12 @@
 import React from 'react';
 
 
-function TextBox({quoteFormData}) {
+function TextBox({quoteData}) {
     return ( 
         <div>
-            <p>Anime Title : {quoteFormData.anime}</p>
-            <p>Anime Character : {quoteFormData.character}</p>
-            <p>Anime Quote : {quoteFormData.quote}</p>
+            <p>Anime Title : {quoteData.anime}</p>
+            <p>Anime Character : {quoteData.character}</p>
+            <p>Anime Quote : {quoteData.quote}</p>
         </div>
      );
 }

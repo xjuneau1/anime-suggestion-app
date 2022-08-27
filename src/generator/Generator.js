@@ -1,47 +1,61 @@
-import TextBox from './TextBox';
-import GeneratorButton from './GeneratorButton';
-import React, {useState, useEffect} from 'react';
+import TextBox from "./TextBox";
+import GeneratorButton from "./GeneratorButton";
+import React, { useState, useEffect } from "react";
 
-function Generator() {
-    const initQuoteData = {
-        anime: "",
-        character: "",
-        quote:"",
-        image:"",
-      }
-    const [quoteData, setQuoteData] = useState(initQuoteData)
+function Generator({background, setBackground}) {
 
-    useEffect(()=>{
-        async function getAnime(){
-            await fetch("https://animechan.vercel.app/api/random",{method:"GET"})
-            .then((response) => response.json())
-            .then((data) => {
-              setQuoteData({ ...quoteData, ...data });
-              return fetch(
-                `https://kitsu.io/api/edge/anime?filter[text]=${quoteData.anime
-                  .replace(/-|!|;|:/g, "")
-                  .replace(/\s+/g, "%20")
-                  .toLowerCase()}`,{method:"GET"})
-            })
-            .then((response) => response.json())
-            .then(({data})=>{
-              console.log(data[0].attributes.coverImage.original)
-            })
-            .then(console.log(quoteData))
-        }
-        getAnime()
+  const initQuoteData = {
+    anime: "",
+    character: "",
+    quote: "",
+  };
 
-        return ()=>{
-            setQuoteData({...initQuoteData})
-        }
-      },[])
+  const [quoteData, setQuoteData] = useState(initQuoteData);
+ 
+  useEffect(() => {
+    const abortController = new AbortController();
+    async function getAnime() {
+      await fetch("https://animechan.vercel.app/api/random", {
+        method: "GET",
+        signal: abortController.signal,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setQuoteData({ ...quoteData, ...data });
+          return fetch(
+            `https://kitsu.io/api/edge/anime?filter[text]=${quoteData.anime
+              .replace(/-|!|;|:/g, "")
+              .replace(/\s+/g, "%20")
+              .toLowerCase()}`,
+            { method: "GET", signal: abortController.signal }
+          );
+        })
+        .then((response) => response.json())
+        .then(({ data }) =>
+          setBackground(data[0].attributes.coverImage.original)
+        )
+        .then(console.log(background))
+        .catch((error) => console.log(error));
+    }
+    getAnime();
 
-    return ( 
-        <div>
-            <GeneratorButton quoteData={quoteData} setQuoteData={setQuoteData}/>
-            <TextBox quoteData={quoteData}/>
-        </div>
-     );
+    return () => {
+      abortController.abort();
+      setQuoteData({ ...initQuoteData });
+    };
+  }, []);
+
+  return (
+    <div>
+      <GeneratorButton
+        quoteData={quoteData}
+        setQuoteData={setQuoteData}
+        background={background}
+        setBackground={setBackground}
+      />
+      <TextBox quoteData={quoteData} />
+    </div>
+  );
 }
 
 export default Generator;
